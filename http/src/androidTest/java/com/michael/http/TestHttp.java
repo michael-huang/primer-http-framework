@@ -1,7 +1,10 @@
 package com.michael.http;
 
+import android.os.Environment;
 import android.test.InstrumentationTestCase;
 import android.util.Log;
+
+import java.io.File;
 
 /**
  * Created by huangyanzhen on 2016/12/8.
@@ -63,6 +66,27 @@ public class TestHttp extends InstrumentationTestCase {
                 e.printStackTrace();
             }
         });
+        RequestTask task = new RequestTask(request);
+        task.execute(); // Actually unit test doesn't support thread execution, I just test out the syntax here
+    }
+
+    public void testHttpPostOnSubThreadforDownload() throws Throwable {
+        String url = "http://jsonplaceholder.typicode.com/userlogin";
+        String content = "username=michael&password=123456";
+        Request request = new Request(url, Request.RequestMethod.POST);
+        request.content = content;
+        String path = Environment.getExternalStorageDirectory() + File.separator + "test.txt";
+        request.setCallback(new FileCallback() {
+            @Override
+            public void onSuccess(String result) {
+                Log.d(TAG, "path = " + result);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                e.printStackTrace();
+            }
+        }.setCachePath(path));
         RequestTask task = new RequestTask(request);
         task.execute(); // Actually unit test doesn't support thread execution, I just test out the syntax here
     }

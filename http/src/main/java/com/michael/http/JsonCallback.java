@@ -14,7 +14,7 @@ import java.lang.reflect.Type;
 public abstract class JsonCallback<T> extends BaseCallback<T> {
 
     @Override
-    protected T bindDtata(String result) throws Exception {
+    protected T bindData(String result) throws Exception {
         JSONObject json = new JSONObject(result);
         JSONObject data = json.optJSONObject("data");
         Gson gson = new Gson();
