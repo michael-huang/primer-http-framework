@@ -2,7 +2,6 @@ package com.michael.http;
 
 import android.os.AsyncTask;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
 
 /**

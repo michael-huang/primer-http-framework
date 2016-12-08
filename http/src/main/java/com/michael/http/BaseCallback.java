@@ -1,21 +1,14 @@
 package com.michael.http;
 
-import com.google.gson.Gson;
-
-import org.json.JSONObject;
-
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 
 /**
  * Created by huangyanzhen on 2016/12/8.
  */
 
-public abstract class HttpCallbackImpl<T> implements HttpCallback<T> {
-
+public abstract class BaseCallback<T> implements HttpCallback<T> {
     @Override
     public T parse(HttpURLConnection connection) throws Exception {
         int statusCode = connection.getResponseCode();
@@ -32,12 +25,10 @@ public abstract class HttpCallbackImpl<T> implements HttpCallback<T> {
             out.close();
 
             String result = new String(out.toByteArray());
-            JSONObject json = new JSONObject(result);
-            JSONObject data = json.optJSONObject("data");
-            Gson gson = new Gson();
-            Type type = ((ParameterizedType)getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-            return gson.fromJson(data.toString(), type);
+            return bindDtata(result);
         }
         return null;
     }
+
+    protected abstract T bindDtata(String result) throws Exception;
 }

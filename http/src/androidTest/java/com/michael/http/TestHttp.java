@@ -32,7 +32,7 @@ public class TestHttp extends InstrumentationTestCase {
         String content = "username=michael&password=123456";
         Request request = new Request(url, Request.RequestMethod.POST);
         request.content = content;
-        request.setCallback(new HttpCallbackImpl<String>() {
+        request.setCallback(new JsonCallback<String>() {
             @Override
             public void onSuccess(String result) {
                 Log.d(TAG, "testHttpPostOnSubThread returns: " + result);
@@ -52,7 +52,7 @@ public class TestHttp extends InstrumentationTestCase {
         String content = "username=michael&password=123456";
         Request request = new Request(url, Request.RequestMethod.POST);
         request.content = content;
-        request.setCallback(new HttpCallbackImpl<User>() {
+        request.setCallback(new JsonCallback<User>() {
             @Override
             public void onSuccess(User result) {
                 Log.d(TAG, "testHttpPostOnSubThreadforGeneric returns: " + result.toString());
