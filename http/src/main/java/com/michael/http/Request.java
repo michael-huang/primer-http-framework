@@ -7,6 +7,11 @@ import java.util.Map;
  */
 
 public class Request {
+    public boolean isEnableProgressUpdate = false;
+
+    public void enableProgressUpdate(boolean isEnable) {
+        this.isEnableProgressUpdate = isEnable;
+    }
 
     public enum RequestMethod {GET, POST, PUT, DELETE}
 

@@ -90,4 +90,29 @@ public class TestHttp extends InstrumentationTestCase {
         RequestTask task = new RequestTask(request);
         task.execute(); // Actually unit test doesn't support thread execution, I just test out the syntax here
     }
+
+    public void testHttpPostOnSubThreadforDownloadProgress() throws Throwable {
+        String url = "http://jsonplaceholder.typicode.com/uploads/test.jpg";
+        Request request = new Request(url, Request.RequestMethod.GET);
+        String path = Environment.getExternalStorageDirectory() + File.separator + "test.jpg";
+        request.setCallback(new FileCallback() {
+            @Override
+            public void onProgressUpdate(int curLen, int totalLen) {
+                Log.d(TAG, "download: " + curLen + "/" + totalLen);
+            }
+
+            @Override
+            public void onSuccess(String result) {
+                Log.d(TAG, "path = " + result);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                e.printStackTrace();
+            }
+        }.setCachePath(path));
+        request.enableProgressUpdate(true);
+        RequestTask task = new RequestTask(request);
+        task.execute(); // Actually unit test doesn't support thread execution, I just test out the syntax here
+    }
 }

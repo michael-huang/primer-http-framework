@@ -11,5 +11,9 @@ public interface HttpCallback<T> {
 
     void onFailure(Exception e);
 
+    T parse(HttpURLConnection connection, OnProgressUpdateListener listener) throws Exception;
+
     T parse(HttpURLConnection connection) throws Exception;
+
+    void onProgressUpdate(int curLen, int totalLen);
 }
