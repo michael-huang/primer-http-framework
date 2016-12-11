@@ -44,6 +44,11 @@ public class RequestTask extends AsyncTask<Void, Integer, Object> {
     protected void onPostExecute(Object o) {
         super.onPostExecute(o);
         if (o instanceof AppException) {
+            if (request.onGlobalExceptionListener != null) {
+                if (request.onGlobalExceptionListener.handleException((AppException) o)) {
+                    request.callback.onFailure((AppException) o);
+                }
+            }
             request.callback.onFailure((AppException) o);
         } else {
             request.callback.onSuccess(o);

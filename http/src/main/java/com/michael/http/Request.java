@@ -8,9 +8,14 @@ import java.util.Map;
 
 public class Request {
     public boolean isEnableProgressUpdate = false;
+    public OnGlobalExceptionListener onGlobalExceptionListener;
 
     public void enableProgressUpdate(boolean isEnable) {
         this.isEnableProgressUpdate = isEnable;
+    }
+
+    public void setGlobalExceptionListener(OnGlobalExceptionListener onGlobalExceptionListener) {
+        this.onGlobalExceptionListener = onGlobalExceptionListener;
     }
 
     public enum RequestMethod {GET, POST, PUT, DELETE}
