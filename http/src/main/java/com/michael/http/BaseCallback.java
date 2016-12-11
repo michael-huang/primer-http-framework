@@ -13,52 +13,57 @@ public abstract class BaseCallback<T> implements HttpCallback<T> {
     private String path;
 
     @Override
-    public T parse(HttpURLConnection connection) throws Exception {
+    public T parse(HttpURLConnection connection) throws AppException {
         return parse(connection, null);
     }
 
     @Override
-    public T parse(HttpURLConnection connection, OnProgressUpdateListener listener) throws Exception {
-        int statusCode = connection.getResponseCode();
-        if (statusCode == HttpURLConnection.HTTP_OK) {
-            if (path == null) {
-                InputStream is = connection.getInputStream();
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                byte[] buffer = new byte[2048];
-                int len;
-                while ((len = is.read(buffer)) != -1) {
-                    out.write(buffer, 0, len);
-                }
-                is.close();
-                out.flush();
-                out.close();
-
-                String result = new String(out.toByteArray());
-                return bindData(result);
-            } else {
-                InputStream is = connection.getInputStream();
-                FileOutputStream out = new FileOutputStream(path);
-
-                int totalLen = connection.getContentLength();
-                int curLen = 0;
-
-                byte[] buffer = new byte[2048];
-                int len;
-                while ((len = is.read(buffer)) != -1) {
-                    out.write(buffer, 0, len);
-                    curLen += len;
-                    if (listener != null) {
-                        listener.onProgressUpdate(curLen, totalLen);
+    public T parse(HttpURLConnection connection, OnProgressUpdateListener listener) throws AppException {
+        try {
+            int statusCode = connection.getResponseCode();
+            if (statusCode == HttpURLConnection.HTTP_OK) {
+                if (path == null) {
+                    InputStream is = connection.getInputStream();
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    byte[] buffer = new byte[2048];
+                    int len;
+                    while ((len = is.read(buffer)) != -1) {
+                        out.write(buffer, 0, len);
                     }
-                }
-                is.close();
-                out.flush();
-                out.close();
+                    is.close();
+                    out.flush();
+                    out.close();
 
-                return bindData(path);
+                    String result = new String(out.toByteArray());
+                    return bindData(result);
+                } else {
+                    InputStream is = connection.getInputStream();
+                    FileOutputStream out = new FileOutputStream(path);
+
+                    int totalLen = connection.getContentLength();
+                    int curLen = 0;
+
+                    byte[] buffer = new byte[2048];
+                    int len;
+                    while ((len = is.read(buffer)) != -1) {
+                        out.write(buffer, 0, len);
+                        curLen += len;
+                        if (listener != null) {
+                            listener.onProgressUpdate(curLen, totalLen);
+                        }
+                    }
+                    is.close();
+                    out.flush();
+                    out.close();
+
+                    return bindData(path);
+                }
+            } else {
+                throw new AppException(statusCode, connection.getResponseMessage());
             }
+        } catch (Exception e) {
+            throw new AppException(e.getMessage());
         }
-        return null;
     }
 
     @Override
@@ -66,7 +71,7 @@ public abstract class BaseCallback<T> implements HttpCallback<T> {
 
     }
 
-    protected abstract T bindData(String result) throws Exception;
+    protected abstract T bindData(String result) throws AppException;
 
 
     public HttpCallback setCachePath(String path) {

@@ -13,7 +13,7 @@ import java.util.Map;
 public class HttpUrlConnectionUtil {
     public static final String TAG = HttpUrlConnectionUtil.class.getSimpleName();
 
-    public static HttpURLConnection execute(Request request) throws IOException {
+    public static HttpURLConnection execute(Request request) throws AppException {
         switch (request.method) {
             case GET:
             case DELETE:
@@ -25,28 +25,38 @@ public class HttpUrlConnectionUtil {
         return null;
     }
 
-    private static HttpURLConnection get(Request request) throws IOException {
-        HttpURLConnection connection = (HttpURLConnection) new URL(request.url).openConnection();
-        connection.setRequestMethod(request.method.name());
-        connection.setReadTimeout(20000);
-        connection.setConnectTimeout(2000);
+    private static HttpURLConnection get(Request request) throws AppException {
+        HttpURLConnection connection = null;
+        try {
+            connection = (HttpURLConnection) new URL(request.url).openConnection();
+            connection.setRequestMethod(request.method.name());
+            connection.setReadTimeout(20000);
+            connection.setConnectTimeout(2000);
+        } catch (IOException e) {
+            throw new AppException(e.getMessage());
+        }
 
         addHeader(connection, request.headers);
 
         return connection;
     }
 
-    private static HttpURLConnection post(Request request) throws IOException {
-        HttpURLConnection connection = (HttpURLConnection) new URL(request.url).openConnection();
-        connection.setRequestMethod(request.method.name());
-        connection.setReadTimeout(20000);
-        connection.setConnectTimeout(20000);
-        connection.setDoOutput(true); // You need to set it to true if you want to send (output) a request body
+    private static HttpURLConnection post(Request request) throws AppException {
+        HttpURLConnection connection = null;
+        try {
+            connection = (HttpURLConnection) new URL(request.url).openConnection();
+            connection.setRequestMethod(request.method.name());
+            connection.setReadTimeout(20000);
+            connection.setConnectTimeout(20000);
+            connection.setDoOutput(true); // You need to set it to true if you want to send (output) a request body
 
-        addHeader(connection, request.headers);
+            addHeader(connection, request.headers);
 
-        OutputStream os = connection.getOutputStream();
-        os.write(request.content.getBytes());
+            OutputStream os = connection.getOutputStream();
+            os.write(request.content.getBytes());
+        } catch (IOException e) {
+            throw new AppException(e.getMessage());
+        }
 
         return connection;
     }

@@ -7,7 +7,7 @@ package com.michael.http;
 public abstract class FileCallback extends BaseCallback<String> {
 
     @Override
-    protected String bindData(String result) throws Exception {
+    protected String bindData(String result) throws AppException {
         return result;
     }
 }

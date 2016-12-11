@@ -42,7 +42,7 @@ public class TestHttp extends InstrumentationTestCase {
             }
 
             @Override
-            public void onFailure(Exception e) {
+            public void onFailure(AppException e) {
                 e.printStackTrace();
             }
         });
@@ -62,7 +62,7 @@ public class TestHttp extends InstrumentationTestCase {
             }
 
             @Override
-            public void onFailure(Exception e) {
+            public void onFailure(AppException e) {
                 e.printStackTrace();
             }
         });
@@ -83,7 +83,7 @@ public class TestHttp extends InstrumentationTestCase {
             }
 
             @Override
-            public void onFailure(Exception e) {
+            public void onFailure(AppException e) {
                 e.printStackTrace();
             }
         }.setCachePath(path));
@@ -107,7 +107,12 @@ public class TestHttp extends InstrumentationTestCase {
             }
 
             @Override
-            public void onFailure(Exception e) {
+            public void onFailure(AppException e) {
+                if (e.statusCode == 403) {
+                    if ("password incorrect".equals(e.responseMessage)) {
+                        // TODO
+                    }
+                }
                 e.printStackTrace();
             }
         }.setCachePath(path));

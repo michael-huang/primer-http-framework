@@ -35,7 +35,7 @@ public class RequestTask extends AsyncTask<Void, Integer, Object> {
             } else {
                 return request.callback.parse(connection);
             }
-        } catch (Exception e) {
+        } catch (AppException e) {
             return e;
         }
     }
@@ -43,8 +43,8 @@ public class RequestTask extends AsyncTask<Void, Integer, Object> {
     @Override
     protected void onPostExecute(Object o) {
         super.onPostExecute(o);
-        if (o instanceof Exception) {
-            request.callback.onFailure((Exception) o);
+        if (o instanceof AppException) {
+            request.callback.onFailure((AppException) o);
         } else {
             request.callback.onSuccess(o);
         }

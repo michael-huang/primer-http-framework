@@ -7,7 +7,7 @@ package com.michael.http;
 public abstract class XmlCallback<T> extends BaseCallback<T> {
 
     @Override
-    protected T bindData(String result) throws Exception {
+    protected T bindData(String result) throws AppException {
         // TODO
         return null;
     }
