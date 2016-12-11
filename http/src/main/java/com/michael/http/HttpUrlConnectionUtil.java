@@ -3,6 +3,7 @@ package com.michael.http;
 import android.webkit.URLUtil;
 
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -17,7 +18,7 @@ public class HttpUrlConnectionUtil {
 
     public static HttpURLConnection execute(Request request) throws AppException {
         if (!URLUtil.isNetworkUrl(request.url)) {
-            throw new AppException("the url: " + request.url + "is invalid");
+            throw new AppException(AppException.ErrorType.MANUAL, "the url: " + request.url + "is invalid");
         }
         switch (request.method) {
             case GET:
@@ -37,11 +38,14 @@ public class HttpUrlConnectionUtil {
             connection.setRequestMethod(request.method.name());
             connection.setReadTimeout(20000);
             connection.setConnectTimeout(2000);
-        } catch (IOException e) {
-            throw new AppException(e.getMessage());
-        }
 
-        addHeader(connection, request.headers);
+            addHeader(connection, request.headers);
+
+        } catch (InterruptedIOException e) {
+            throw new AppException(AppException.ErrorType.TIMEOUT, e.getMessage());
+        } catch (IOException e) {
+            throw new AppException(AppException.ErrorType.SERVER, e.getMessage());
+        }
 
         return connection;
     }
@@ -59,8 +63,10 @@ public class HttpUrlConnectionUtil {
 
             OutputStream os = connection.getOutputStream();
             os.write(request.content.getBytes());
+        } catch (InterruptedIOException e) {
+            throw new AppException(AppException.ErrorType.TIMEOUT, e.getMessage());
         } catch (IOException e) {
-            throw new AppException(e.getMessage());
+            throw new AppException(AppException.ErrorType.SERVER, e.getMessage());
         }
 
         return connection;

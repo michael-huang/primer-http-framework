@@ -25,6 +25,7 @@ public class Request {
     public Map<String, String> headers;
     public RequestMethod method;
     public HttpCallback callback;
+    public int maxRetryCount = 3;
 
     public Request(String url, RequestMethod method) {
         this.url = url;

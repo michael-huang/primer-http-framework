@@ -23,7 +23,7 @@ public abstract class JsonCallback<T> extends BaseCallback<T> {
             Type type = ((ParameterizedType)getClass().getGenericSuperclass()).getActualTypeArguments()[0];
             return gson.fromJson(data.toString(), type);
         } catch (JSONException e) {
-               throw new AppException(e.getMessage());
+               throw new AppException(AppException.ErrorType.JSON, e.getMessage());
         }
     }
 }

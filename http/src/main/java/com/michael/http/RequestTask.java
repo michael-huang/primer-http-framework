@@ -23,6 +23,10 @@ public class RequestTask extends AsyncTask<Void, Integer, Object> {
 
     @Override
     protected Object doInBackground(Void... voids) {
+        return request(0);
+    }
+
+    public Object request(int retry) {
         try {
             HttpURLConnection connection = HttpUrlConnectionUtil.execute(request);
             if (request.isEnableProgressUpdate) {
@@ -36,6 +40,12 @@ public class RequestTask extends AsyncTask<Void, Integer, Object> {
                 return request.callback.parse(connection);
             }
         } catch (AppException e) {
+            if (e.errorType == AppException.ErrorType.TIMEOUT) {
+                if (retry < request.maxRetryCount) {
+                    retry++;
+                    return request(retry);
+                }
+            }
             return e;
         }
     }

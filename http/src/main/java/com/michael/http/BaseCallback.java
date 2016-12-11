@@ -2,6 +2,7 @@ package com.michael.http;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 
@@ -61,8 +62,8 @@ public abstract class BaseCallback<T> implements HttpCallback<T> {
             } else {
                 throw new AppException(statusCode, connection.getResponseMessage());
             }
-        } catch (Exception e) {
-            throw new AppException(e.getMessage());
+        } catch (IOException e) {
+            throw new AppException(AppException.ErrorType.SERVER, e.getMessage());
         }
     }
 
