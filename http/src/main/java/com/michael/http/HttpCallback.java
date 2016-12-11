@@ -16,4 +16,6 @@ public interface HttpCallback<T> {
     T parse(HttpURLConnection connection) throws AppException;
 
     void onProgressUpdate(int curLen, int totalLen);
+
+    void cancel();
 }

@@ -32,27 +32,33 @@ public class HttpUrlConnectionUtil {
     }
 
     private static HttpURLConnection get(Request request) throws AppException {
-        HttpURLConnection connection = null;
         try {
-            connection = (HttpURLConnection) new URL(request.url).openConnection();
+            // check if cancelled
+            request.checkIfCancelled();
+
+            HttpURLConnection connection = (HttpURLConnection) new URL(request.url).openConnection();
             connection.setRequestMethod(request.method.name());
             connection.setReadTimeout(20000);
             connection.setConnectTimeout(2000);
 
             addHeader(connection, request.headers);
 
+            // check if cancelled
+            request.checkIfCancelled();
+            return connection;
         } catch (InterruptedIOException e) {
             throw new AppException(AppException.ErrorType.TIMEOUT, e.getMessage());
         } catch (IOException e) {
             throw new AppException(AppException.ErrorType.SERVER, e.getMessage());
         }
-
-        return connection;
     }
 
     private static HttpURLConnection post(Request request) throws AppException {
         HttpURLConnection connection = null;
         try {
+            // check if cancelled
+            request.checkIfCancelled();
+
             connection = (HttpURLConnection) new URL(request.url).openConnection();
             connection.setRequestMethod(request.method.name());
             connection.setReadTimeout(20000);
@@ -61,8 +67,14 @@ public class HttpUrlConnectionUtil {
 
             addHeader(connection, request.headers);
 
+            // check if cancelled
+            request.checkIfCancelled();
+
             OutputStream os = connection.getOutputStream();
             os.write(request.content.getBytes());
+
+            // check if cancelled
+            request.checkIfCancelled();
         } catch (InterruptedIOException e) {
             throw new AppException(AppException.ErrorType.TIMEOUT, e.getMessage());
         } catch (IOException e) {

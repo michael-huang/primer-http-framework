@@ -18,6 +18,17 @@ public class Request {
         this.onGlobalExceptionListener = onGlobalExceptionListener;
     }
 
+    public void checkIfCancelled() throws AppException {
+        if (isCancelled) {
+            throw new AppException(AppException.ErrorType.CANCEL, "the request has been cancelled");
+        }
+    }
+
+    public void cancel() {
+        isCancelled = true;
+        callback.cancel();
+    }
+
     public enum RequestMethod {GET, POST, PUT, DELETE}
 
     public String url;
@@ -26,6 +37,7 @@ public class Request {
     public RequestMethod method;
     public HttpCallback callback;
     public int maxRetryCount = 3;
+    public volatile boolean isCancelled;
 
     public Request(String url, RequestMethod method) {
         this.url = url;

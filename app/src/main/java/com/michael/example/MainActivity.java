@@ -123,7 +123,9 @@ public class MainActivity extends BaseActivity {
         request.setGlobalExceptionListener(this);
         request.enableProgressUpdate(true);
         RequestTask task = new RequestTask(request);
-        task.execute(); // Actually unit test doesn't support thread execution, I just test out the syntax here
+        task.execute();
+        task.cancel(true);
+        request.cancel();
     }
 
 }

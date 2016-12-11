@@ -7,7 +7,7 @@ package com.michael.http;
 public class AppException extends Exception{
     public int statusCode;
     public String responseMessage;
-    public enum ErrorType {TIMEOUT, SERVER, JSON, IO, FILE_NOT_FOUND, MANUAL}
+    public enum ErrorType {TIMEOUT, SERVER, JSON, IO, FILE_NOT_FOUND, MANUAL, CANCEL}
     public ErrorType errorType;
 
     public AppException(int statusCode, String responseMessage) {

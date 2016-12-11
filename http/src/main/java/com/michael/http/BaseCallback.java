@@ -12,6 +12,7 @@ import java.net.HttpURLConnection;
 
 public abstract class BaseCallback<T> implements HttpCallback<T> {
     private String path;
+    private volatile boolean isCancelled;
 
     @Override
     public T parse(HttpURLConnection connection) throws AppException {
@@ -21,6 +22,8 @@ public abstract class BaseCallback<T> implements HttpCallback<T> {
     @Override
     public T parse(HttpURLConnection connection, OnProgressUpdateListener listener) throws AppException {
         try {
+            checkIfCancelled();
+            
             int statusCode = connection.getResponseCode();
             if (statusCode == HttpURLConnection.HTTP_OK) {
                 if (path == null) {
@@ -29,6 +32,7 @@ public abstract class BaseCallback<T> implements HttpCallback<T> {
                     byte[] buffer = new byte[2048];
                     int len;
                     while ((len = is.read(buffer)) != -1) {
+                        checkIfCancelled();
                         out.write(buffer, 0, len);
                     }
                     is.close();
@@ -47,6 +51,7 @@ public abstract class BaseCallback<T> implements HttpCallback<T> {
                     byte[] buffer = new byte[2048];
                     int len;
                     while ((len = is.read(buffer)) != -1) {
+                        checkIfCancelled();
                         out.write(buffer, 0, len);
                         curLen += len;
                         if (listener != null) {
@@ -65,6 +70,17 @@ public abstract class BaseCallback<T> implements HttpCallback<T> {
         } catch (IOException e) {
             throw new AppException(AppException.ErrorType.SERVER, e.getMessage());
         }
+    }
+
+    protected void checkIfCancelled() throws AppException {
+        if (isCancelled) {
+            throw new AppException(AppException.ErrorType.CANCEL, "the request has been cancelled");
+        }
+    }
+
+    @Override
+    public void cancel() {
+        isCancelled = true;
     }
 
     @Override
