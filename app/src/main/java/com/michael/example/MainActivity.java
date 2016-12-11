@@ -30,6 +30,11 @@ public class MainActivity extends BaseActivity {
     }
 
     public void btnClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_run:
+                testHttpPostOnSubThreadforDownloadProgressCancelTest();
+                break;
+        }
     }
 
     public void testHttpPostOnSubThread() throws Throwable {
@@ -128,4 +133,35 @@ public class MainActivity extends BaseActivity {
         request.cancel();
     }
 
+    public void testHttpPostOnSubThreadforDownloadProgressCancelTest() {
+        String url = "http://jsonplaceholder.typicode.com/uploads/test.jpg";
+        final Request request = new Request(url, Request.RequestMethod.GET);
+        final RequestTask task = new RequestTask(request);
+        final String path = Environment.getExternalStorageDirectory() + File.separator + "test.jpg";
+        request.setCallback(new FileCallback() {
+            @Override
+            public void onProgressUpdate(int curLen, int totalLen) {
+                Log.d(TAG, "download: " + curLen + "/" + totalLen);
+                if (curLen * 1001 / totalLen > 50) { // cancel the task while the progress is over 50%
+                    task.cancel(true);
+                    request.cancel();
+                }
+            }
+
+            @Override
+            public void onSuccess(String result) {
+                Log.d(TAG, "path = " + result);
+            }
+
+            @Override
+            public void onFailure(AppException e) {
+                e.printStackTrace();
+            }
+        }.setCachePath(path));
+        request.setGlobalExceptionListener(this);
+        request.enableProgressUpdate(true);
+        task.execute();
+        task.cancel(true);
+        request.cancel();
+    }
 }
