@@ -17,4 +17,10 @@ public class BaseActivity extends AppCompatActivity implements OnGlobalException
         }
         return false;
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        RequestManager.getInstance().cancelRequest(toString());
+    }
 }

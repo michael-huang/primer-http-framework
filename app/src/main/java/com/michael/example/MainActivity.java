@@ -11,6 +11,7 @@ import com.michael.http.BaseActivity;
 import com.michael.http.FileCallback;
 import com.michael.http.JsonCallback;
 import com.michael.http.Request;
+import com.michael.http.RequestManager;
 import com.michael.http.RequestTask;
 import com.michael.http.User;
 
@@ -136,15 +137,15 @@ public class MainActivity extends BaseActivity {
     public void testHttpPostOnSubThreadforDownloadProgressCancelTest() {
         String url = "http://jsonplaceholder.typicode.com/uploads/test.jpg";
         final Request request = new Request(url, Request.RequestMethod.GET);
-        final RequestTask task = new RequestTask(request);
+//        final RequestTask task = new RequestTask(request);
         final String path = Environment.getExternalStorageDirectory() + File.separator + "test.jpg";
         request.setCallback(new FileCallback() {
             @Override
             public void onProgressUpdate(int curLen, int totalLen) {
                 Log.d(TAG, "download: " + curLen + "/" + totalLen);
                 if (curLen * 1001 / totalLen > 50) { // cancel the task while the progress is over 50%
-                    task.cancel(true);
-                    request.cancel();
+//                    task.cancel(true);
+//                    request.cancel();
                 }
             }
 
@@ -160,8 +161,9 @@ public class MainActivity extends BaseActivity {
         }.setCachePath(path));
         request.setGlobalExceptionListener(this);
         request.enableProgressUpdate(true);
-        task.execute();
-        task.cancel(true);
-        request.cancel();
+        request.setTag(toString());
+        RequestManager.getInstance().performRequest(request);
+//        task.cancel(true);
+//        request.cancel();
     }
 }

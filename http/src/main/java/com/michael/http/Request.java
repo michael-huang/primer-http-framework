@@ -9,6 +9,7 @@ import java.util.Map;
 public class Request {
     public boolean isEnableProgressUpdate = false;
     public OnGlobalExceptionListener onGlobalExceptionListener;
+    public String tag;
 
     public void enableProgressUpdate(boolean isEnable) {
         this.isEnableProgressUpdate = isEnable;
@@ -27,6 +28,10 @@ public class Request {
     public void cancel() {
         isCancelled = true;
         callback.cancel();
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 
     public enum RequestMethod {GET, POST, PUT, DELETE}
