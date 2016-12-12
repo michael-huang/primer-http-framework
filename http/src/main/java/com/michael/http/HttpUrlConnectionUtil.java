@@ -14,7 +14,7 @@ import java.util.Map;
  */
 
 public class HttpUrlConnectionUtil {
-    public static final String TAG = HttpUrlConnectionUtil.class.getSimpleName();
+    private static final String TAG = HttpUrlConnectionUtil.class.getSimpleName();
 
     public static HttpURLConnection execute(Request request) throws AppException {
         if (!URLUtil.isNetworkUrl(request.url)) {

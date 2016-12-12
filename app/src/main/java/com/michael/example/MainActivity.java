@@ -9,6 +9,7 @@ import android.widget.Button;
 import com.michael.http.AppException;
 import com.michael.http.FileCallback;
 import com.michael.http.JsonCallback;
+import com.michael.http.JsonReaderCallback;
 import com.michael.http.Request;
 import com.michael.http.RequestManager;
 import com.michael.http.RequestTask;
@@ -62,7 +63,8 @@ public class MainActivity extends BaseActivity {
         String content = "username=michael&password=123456";
         Request request = new Request(url, Request.RequestMethod.POST);
         request.content = content;
-        request.setCallback(new JsonCallback<User>() {
+        String path = Environment.getExternalStorageDirectory() + File.separator + "json.tmp";
+        request.setCallback(new JsonReaderCallback<User>() {
             @Override
             public void onSuccess(User result) {
                 Log.d(TAG, "testHttpPostOnSubThreadforGeneric returns: " + result.toString());
@@ -192,7 +194,7 @@ public class MainActivity extends BaseActivity {
         RequestTask task = new RequestTask(request);
         task.execute();
         task.cancel(true);
-        request.cancel();
+        request.cancel(true);
     }
 
     public void testHttpPostOnSubThreadforDownloadProgressCancelTest() {
