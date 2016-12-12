@@ -25,6 +25,6 @@ public class BaseActivity extends AppCompatActivity implements OnGlobalException
     @Override
     protected void onStop() {
         super.onStop();
-        RequestManager.getInstance().cancelRequest(toString());
+        RequestManager.getInstance().cancelRequest(toString(), true);
     }
 }
