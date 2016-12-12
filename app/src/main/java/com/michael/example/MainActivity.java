@@ -78,6 +78,36 @@ public class MainActivity extends BaseActivity {
         task.execute(); // Actually unit test doesn't support thread execution, I just test out the syntax here
     }
 
+    public void testHttpPostOnSubThreadforGenericPostRequest() throws Throwable {
+        String url = "http://jsonplaceholder.typicode.com/userlogin";
+        String content = "username=michael&password=123456";
+        Request request = new Request(url, Request.RequestMethod.POST);
+        request.content = content;
+        request.setCallback(new JsonCallback<User>() {
+
+            @Override
+            public User postRequest(User user) {
+                // TODO insert into db
+                // TODO edit user
+                Log.d(TAG, "postRequest returns: " + user.toString());
+                user.email = "jackson@xxx.com";
+                return null;
+            }
+
+            @Override
+            public void onSuccess(User result) {
+                Log.d(TAG, "onSuccess returns: " + result.toString());
+            }
+
+            @Override
+            public void onFailure(AppException e) {
+                e.printStackTrace();
+            }
+        });
+        RequestTask task = new RequestTask(request);
+        task.execute(); // Actually unit test doesn't support thread execution, I just test out the syntax here
+    }
+
     public void testHttpPostOnSubThreadforDownload() throws Throwable {
         String url = "http://jsonplaceholder.typicode.com/userlogin";
         String content = "username=michael&password=123456";

@@ -40,7 +40,8 @@ public abstract class BaseCallback<T> implements HttpCallback<T> {
                     out.close();
 
                     String result = new String(out.toByteArray());
-                    return bindData(result);
+                    T t = bindData(result);
+                    return postRequest(t);
                 } else {
                     InputStream is = connection.getInputStream();
                     FileOutputStream out = new FileOutputStream(path);
@@ -62,7 +63,8 @@ public abstract class BaseCallback<T> implements HttpCallback<T> {
                     out.flush();
                     out.close();
 
-                    return bindData(path);
+                    T t = bindData(path);
+                    return postRequest(t);
                 }
             } else {
                 throw new AppException(statusCode, connection.getResponseMessage());
@@ -86,6 +88,11 @@ public abstract class BaseCallback<T> implements HttpCallback<T> {
     @Override
     public void onProgressUpdate(int curLen, int totalLen) {
 
+    }
+
+    @Override
+    public T postRequest(T t) {
+        return t;
     }
 
     protected abstract T bindData(String result) throws AppException;
