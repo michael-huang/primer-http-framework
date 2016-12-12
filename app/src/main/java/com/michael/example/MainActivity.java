@@ -7,13 +7,11 @@ import android.view.View;
 import android.widget.Button;
 
 import com.michael.http.AppException;
-import com.michael.http.BaseActivity;
 import com.michael.http.FileCallback;
 import com.michael.http.JsonCallback;
 import com.michael.http.Request;
 import com.michael.http.RequestManager;
 import com.michael.http.RequestTask;
-import com.michael.http.User;
 
 import java.io.File;
 import java.util.ArrayList;
