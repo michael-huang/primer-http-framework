@@ -90,9 +90,24 @@ public abstract class BaseCallback<T> implements HttpCallback<T> {
 
     }
 
+    /**
+     * invoked on sub thread
+     * @param t serialized by sub callbacks
+     * @return final result by calling onSuccess(t)
+     */
     @Override
     public T postRequest(T t) {
         return t;
+    }
+
+    /**
+     * invoked on sub thread
+     * @return if not null, will skip the http request, call {@link #onSuccess(Object)} directly
+     * @return
+     */
+    @Override
+    public T preRequest() {
+        return null;
     }
 
     protected abstract T bindData(String result) throws AppException;

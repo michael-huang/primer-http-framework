@@ -17,6 +17,8 @@ public interface HttpCallback<T> {
 
     T postRequest(T t);
 
+    T preRequest();
+
     void onProgressUpdate(int curLen, int totalLen);
 
     void cancel();

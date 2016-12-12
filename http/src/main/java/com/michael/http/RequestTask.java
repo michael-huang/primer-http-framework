@@ -23,6 +23,12 @@ public class RequestTask extends AsyncTask<Void, Integer, Object> {
 
     @Override
     protected Object doInBackground(Void... voids) {
+        if (request.callback != null) {
+            Object o = request.callback.preRequest();
+            if (o != null) {
+                return o;
+            }
+        }
         return request(0);
     }
 

@@ -16,6 +16,7 @@ import com.michael.http.RequestTask;
 import com.michael.http.User;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class MainActivity extends BaseActivity {
 
@@ -55,7 +56,7 @@ public class MainActivity extends BaseActivity {
             }
         });
         RequestTask task = new RequestTask(request);
-        task.execute(); // Actually unit test doesn't support thread execution, I just test out the syntax here
+        task.execute();
     }
 
     public void testHttpPostOnSubThreadforGeneric() throws Throwable {
@@ -75,7 +76,39 @@ public class MainActivity extends BaseActivity {
             }
         });
         RequestTask task = new RequestTask(request);
-        task.execute(); // Actually unit test doesn't support thread execution, I just test out the syntax here
+        task.execute();
+    }
+
+    public void testHttpPostOnSubThreadforGenericLoadMore() throws Throwable {
+        String url = "http://jsonplaceholder.typicode.com/?service=user.getAll";
+        url += "&timestamp=" + System.currentTimeMillis() + "&count=30";
+        Request request = new Request(url, Request.RequestMethod.GET);
+        request.setCallback(new JsonCallback<ArrayList<Module>>() {
+
+            @Override
+            public ArrayList<Module> preRequest() {
+                // TODO fetch data from db
+                return null;
+            }
+
+            @Override
+            public ArrayList<Module> postRequest(ArrayList<Module> modules) {
+                // TODO insert into db
+                return modules;
+            }
+
+            @Override
+            public void onSuccess(ArrayList<Module> result) {
+                Log.d(TAG, "result size: " + result.size());
+            }
+
+            @Override
+            public void onFailure(AppException e) {
+                e.printStackTrace();
+            }
+        });
+        RequestTask task = new RequestTask(request);
+        task.execute();
     }
 
     public void testHttpPostOnSubThreadforGenericPostRequest() throws Throwable {
@@ -105,7 +138,7 @@ public class MainActivity extends BaseActivity {
             }
         });
         RequestTask task = new RequestTask(request);
-        task.execute(); // Actually unit test doesn't support thread execution, I just test out the syntax here
+        task.execute();
     }
 
     public void testHttpPostOnSubThreadforDownload() throws Throwable {
@@ -126,7 +159,7 @@ public class MainActivity extends BaseActivity {
             }
         }.setCachePath(path));
         RequestTask task = new RequestTask(request);
-        task.execute(); // Actually unit test doesn't support thread execution, I just test out the syntax here
+        task.execute();
     }
 
     public void testHttpPostOnSubThreadforDownloadProgress() throws Throwable {
